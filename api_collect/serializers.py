@@ -33,4 +33,4 @@ class ImageModelSerializer(serializers.ModelSerializer):
     imagesLinks=serializers.ImageField(required=False)
     class Meta:
         model=models.imagesModel
-        fields=['id', 'imagesLinks', 'his_tags']
+        fields=['id', 'imagesLinks']

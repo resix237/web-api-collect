@@ -61,10 +61,47 @@ def chragerImageBd(request):
 #     serializer_class = serializers.imageSerializer
 
 
+
+class imageApiView(APIView):
+    parser_classes=[MultiPartParser, FormParser]
+    
+
+    def post(self,request, format=None):
+        print(request.data)
+        serializer=serializers.ImageModelSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            lesClasses = ['Bamileke', 'Beti', 'Bamenda', 'Douala', 'Peulh']
+            cnn = keras.models.load_model(MODEL_ML)
+            img_path=os.path.join(BASE_DIR/'media/images', serializer.data['imagesLinks'].split('/')[-1])
+
+            img = image.load_img(img_path, target_size=(224,224))
+        
+            x = image.img_to_array(img)
+            x = np.expand_dims(x, axis=0)
+            x = preprocess_input(x)
+            predictions=cnn.predict(x)
+            taux = np.amax(predictions)*100
+            serializer.his_tags=lesClasses[np.argmax(predictions)]
+            #fin de prediction 
+            #je vais creer un objet image pour renvoyer la serialization
+
+            imageTampon=models.images(link=serializer.data['imagesLinks'])
+            tags=models.tags.objects.get(name=lesClasses[np.argmax(predictions)])
+            imageTampon.his_tags=tags
+            imageTampon.save()
+            serializer2=serializers.imageSerializer(imageTampon)
+
+            print(lesClasses[np.argmax(predictions)])
+        
+            return Response(serializer2.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class imageViewModel(viewsets.ModelViewSet):
     queryset =models.imagesModel.objects.all()
     serializer_class = serializers.ImageModelSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = [MultiPartParser, FormParser]
    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

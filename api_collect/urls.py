@@ -15,4 +15,5 @@ router.register(r'model', views.imageViewModel,basename="model")
 urlpatterns = [
     path('', include(router.urls)),
     path('chargement/',views.chragerImageBd ),
+    path('test/',views.imageApiView.as_view() ),
 ]
