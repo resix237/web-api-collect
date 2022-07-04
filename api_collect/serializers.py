@@ -28,6 +28,11 @@ class imageSerializer(WritableNestedModelSerializer):
         #depth=1
 
 
+class imageReconnuSerializer(WritableNestedModelSerializer):
+    
+    class Meta:
+        model=models.imagesReconnu
+        fields=['id', 'link','pourcentage','his_tags']
 
 class ImageModelSerializer(serializers.ModelSerializer):
     imagesLinks=serializers.ImageField(required=False)

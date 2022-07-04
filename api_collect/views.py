@@ -86,11 +86,12 @@ class imageApiView(APIView):
             #fin de prediction 
             #je vais creer un objet image pour renvoyer la serialization
 
-            imageTampon=models.images(link=serializer.data['imagesLinks'])
+            imageTampon=models.imagesReconnu(link=serializer.data['imagesLinks'])
             tags=models.tags.objects.get(name=lesClasses[np.argmax(predictions)])
             imageTampon.his_tags=tags
+            imageTampon.pourcentage=np.max(predictions)*100
             imageTampon.save()
-            serializer2=serializers.imageSerializer(imageTampon)
+            serializer2=serializers.imageReconnuSerializer(imageTampon)
 
             print(lesClasses[np.argmax(predictions)])
         
@@ -123,11 +124,12 @@ class imageViewModel(viewsets.ModelViewSet):
         #fin de prediction 
         #je vais creer un objet image pour renvoyer la serialization
 
-        imageTampon=models.images(link=serializer.data['imagesLinks'])
+        imageTampon=models.imagesReconnu(link=serializer.data['imagesLinks'])
         tags=models.tags.objects.get(name=lesClasses[np.argmax(predictions)])
         imageTampon.his_tags=tags
+        imageTampon.pourcentage=np.max(predictions)*100
         imageTampon.save()
-        serializer2=serializers.imageSerializer(imageTampon)
+        serializer2=serializers.imageReconnuSerializer(imageTampon)
 
         print(lesClasses[np.argmax(predictions)])
         

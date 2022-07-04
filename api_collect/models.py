@@ -19,7 +19,10 @@ class images(models.Model):
     count=models.IntegerField(null=True)
     his_tags=models.ForeignKey(tags,on_delete=models.RESTRICT,null=True)
     list_tags=models.ManyToManyField(images_tags)
-
+class imagesReconnu(models.Model):
+    link=models.CharField(max_length=200)
+    pourcentage=models.IntegerField(null=True)
+    his_tags=models.ForeignKey(tags,on_delete=models.RESTRICT,null=True)
 class imagesModel(models.Model):
     imagesLinks= models.ImageField(upload_to="images/")
     his_tags=models.CharField(max_length=200, blank=True)
